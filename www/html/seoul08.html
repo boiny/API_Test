@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="my api">
+    <meta name="author" content="poppppp">
+    <link rel="icon" href="../favicon.ico">
+
+    <title>My API</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="../css/jquery-ui.css" rel="stylesheet">
+    <link href="../css/dashboard.css" rel="stylesheet">
+    <link href="../css/theme.css" rel="stylesheet">
+    <link href="../css/showLoading.css" rel="stylesheet">
+    <!--link href="./css/sticky-footer.css" rel="stylesheet"-->
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <script type="text/javascript" src="../cordova.js"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.3.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui.js"></script>
+    <script type="text/javascript" src="../js/jquery.showLoading.min.js"></script>
+    <script type="text/javascript" src="../js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../js/common.js"></script>
+
+</head>
+<body>
+    <div id="includedContent">
+    </div>
+    <div class="container-fluid">
+        <div class="panel">
+            <div class="panel-heading">
+                <h3 class="panel-title">서울시 걷고 싶은 산책길 정보</h3>
+            </div>
+            <div class="panel-body">
+                <div class="table-type1">
+                    <table>
+                        <colgroup>
+                            <col width="30%" />
+                            <col width="*" />
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>검색항목명</th>
+                                <th>검색항목값</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>가고싶은 지역</th>
+                                <td>
+                                    <select id="AREA_GU" class="select" style="width:99%;">
+                  										<option value="">-선택-</option>
+                  										<option value="강남구">강남구</option>
+                                      <option value="강동구">강동구</option>
+                                      <option value="강북구">강북구</option>
+                                      <option value="강서구">강서구</option>
+                                      <option value="관악구">관악구</option>
+                                      <option value="광진구">광진구</option>
+                                      <option value="구로구">구로구</option>
+                                      <option value="금천구">금천구</option>
+
+                                      <option value="노원구">노원구</option>
+
+                                      <option value="도봉구">도봉구</option>
+                                      <option value="동대문구">동대문구</option>
+                                      <option value="동작구">동작구</option>
+
+                                      <option value="마포구">마포구</option>
+
+                                      <option value="서대문구">서대문구</option>
+                                      <option value="서초구">서초구</option>
+                                      <option value="성동구">성동구</option>
+                                      <option value="성북구">성북구</option>
+                                      <option value="송파구">송파구</option>
+
+                                      <option value="양천구">양천구</option>
+                                      <option value="영등포구">영등포구</option>
+                                      <option value="용산구">용산구</option>
+                                      <option value="은평구">은평구</option>
+                                      <option value="종로구">종로구</option>
+                                      <option value="중구">중구</option>
+                                      <option value="중랑구">중랑구</option>
+                  									</select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>걷고싶은 시간</th>
+                                <td>
+                                    <select id="LEAD_TIME" class="select" style="width:99%;">
+                                      <option value="">-선택-</option>
+                                      <option value="1시간">1시간 - 2시간미만</option>
+                                      <option value="2시간">2시간 - 3시간미만</option>
+                                      <option value="3시간">3시간 - 4시간미만</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="btn-sec">
+                    <button type="button" class="btn btn-default" onclick="fnHistory();">최근검색어</button>
+                    <button type="button" class="btn btn-default on" onclick="fnSearch();">검색</button>
+                </p>
+            </div>
+        </div>
+        <div id="tMain" class="panel">
+            <div class="panel-heading">
+                <h3 class="panel-title">응답결과 <span id="totalCnt"></span></h3>
+            </div>
+            <div class="panel-body">
+                <div class="table-type1">
+                    <table id="resTable">
+                        <colgroup>
+                            <col width="10%" />
+                            <col width="30%" />
+                            <col width="*" />
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>응답명</th>
+                                <th>응답값</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="tDetail" class="panel" style="display:none;">
+            <div class="panel-heading">
+                <h3 class="panel-title">응답결과
+                	<span align="right">
+                    <button type="button" class="btn btn-default" onclick="fnBack();">뒤로</button></span>
+                </h3>
+            </div>
+            <div class="panel-body">
+                <div class="table-type1">
+                    <table id="detailTable">
+                        <colgroup>
+                            <col width="30%" />
+                            <col width="*" />
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>응답명</th>
+                                <th>응답값</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- /container -->
+
+    <div id="format01" style="display:none;">
+        <table>
+            <tbody>
+                <tr>
+                    <td align="right" rowspan='6' class="no">1</td>
+                </tr>
+                <tr>
+                    <td>코스명</td>
+                    <td class="COURSE_NAME"></td>
+                </tr>
+                <tr>
+                    <td>자치구</td>
+                    <td class="AREA_GU"></td>
+                </tr>
+                <tr>
+                    <td>포인트명칭</td>
+                    <td class="CPI_NAME"></td>
+                </tr>
+                <tr>
+                    <td>거리</td>
+                    <td class="DISTANCE"></td>
+                </tr>
+                <tr>
+                    <td>소요시간</td>
+                    <td class="LEAD_TIME"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="historyList" class="col-sm-4" style="display:none;">
+        <div id="histListGroup" class="list-group">
+        </div>
+    </div>
+    <p id="back-top">
+        <a href="#top"><span></span></a>
+    </p>
+
+    <!--footer class="footer">
+      <div class="container">
+        <p class="text-muted">footer 내용.....</p>
+      </div>
+    </footer-->
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+
+    <!-- Just to make our placeholder images work. Don't actually copy the next line! -->
+    <script type="text/javascript">
+
+        $(document).ready(function() {
+
+        });
+
+        $(window).scroll(function() {
+            if ($(window).scrollTop() == $(document).height() - $(window).height()) {
+                if ((globalSeq) * 10 >= globalTotalCount) {
+                    return;
+                }
+                if (!$("#tMain").is(":visible")) {
+                    return;
+                }
+
+                $(document.body).showLoading();
+                globalSeq++;
+
+                for (i = (globalSeq - 1) * 10; i < globalData[serviceName].row.length; i++) {
+                    if (i >= globalSeq * 10) {
+                        break;
+                    }
+                    $("#format01 table tbody tr td:even").text("");
+                    $("#format01 table tbody .no").text(i + 1);
+
+                    $("#format01 table tbody .COURSE_NAME").text(globalData[serviceName].row[i].COURSE_NAME);
+                    $("#format01 table tbody .AREA_GU").text(globalData[serviceName].row[i].AREA_GU);
+                    $("#format01 table tbody .CPI_NAME").text(globalData[serviceName].row[i].CPI_NAME);
+                    $("#format01 table tbody .DISTANCE").text(globalData[serviceName].row[i].DISTANCE);
+                    $("#format01 table tbody .LEAD_TIME").text(globalData[serviceName].row[i].LEAD_TIME);
+
+                    $("#resTable tbody").append($("#format01 table tbody").html());
+                }
+                $(document.body).hideLoading();
+
+            }
+        });
+
+        var globalData = null;
+        var globalSeq = 1;
+        var globalTotalCount = 0;
+        var serviceName = "SeoulGilWalkCourse";
+        var callApi = "seoul08";
+
+        var curLat = "";
+        var curLnt = "";
+
+        function fnSearch() {
+          //내 위치를 검색
+            var dataObj = new Object();
+            dataObj.paramStr = serviceName + "/1/1000/";
+            dataObj.serviceName = serviceName;
+
+            if ($("#TIME").val() != "") {
+                dataObj["LEAD_TIME"] = $("#LEAD_TIME").val();
+            }
+            if ($("#AREA_GU").val() != "") {
+                dataObj["AREA_GU"] = $("#AREA_GU").val();
+            }
+
+
+            $("#resTable tbody tr").remove();
+            $(document.body).showLoading();
+
+            $.ajax({
+                url: dataSeoulUrl,
+                method: 'POST',   
+                data: dataObj,
+                dataType: "jsonp",
+                jsonp: "callback",
+                success: function(data) {
+
+                    var tempData = null;
+                    globalData = data;
+                    console.log(data)
+                    globalSeq = 1;
+
+                    if (globalData[serviceName] != null) {
+
+                        if (!$.isArray(globalData[serviceName].row)) {
+                            bakData = globalData[serviceName].row;
+                            globalData[serviceName].row = new Array();
+                            globalData[serviceName].row[0] = bakData;
+                        }
+
+                        $("#totalCnt").text("(" + globalData[serviceName].row.length + ")");
+                        globalTotalCount = globalData[serviceName].row.length;
+                        for (i = 0; i < globalTotalCount; i++) {
+                          //console.log(globalData[serviceName])
+                            if (i >= globalSeq * 10) {
+                                break;
+                            }
+                            $("#format01 table tbody tr td:even").text("");
+                            $("#format01 table tbody .no").text(i + 1 + (globalSeq - 1) * 10);
+
+                            $("#format01 table tbody .COURSE_NAME").text(globalData[serviceName].row[i].COURSE_NAME);
+                            $("#format01 table tbody .AREA_GU").text(globalData[serviceName].row[i].AREA_GU);
+                            $("#format01 table tbody .CPI_NAME").text(globalData[serviceName].row[i].CPI_NAME);
+                            $("#format01 table tbody .DISTANCE").text(globalData[serviceName].row[i].DISTANCE);
+                            $("#format01 table tbody .LEAD_TIME").text(globalData[serviceName].row[i].LEAD_TIME);
+
+                            $("#resTable tbody").append($("#format01 table tbody").html());
+                        }
+
+                    } else {
+                        navigator.notification.alert(alertNoData, null, alertTitle);
+                    }
+                    $(document.body).hideLoading();
+                },
+                error: function() {
+                    globalData = null;
+                    globalSeq = 1;
+                    globalTotalCount = 0;
+                    $(document.body).hideLoading();
+                    navigator.notification.alert(alertNetwork, null, alertTitle);
+                    console.log('에러 났음')
+                }
+            });
+            return;
+                  }
+        function fnBack() {
+            $("#tDetail").hide();
+            $("#tMain").show();
+        }
+
+    </script>
+</body>
+
+</html>
