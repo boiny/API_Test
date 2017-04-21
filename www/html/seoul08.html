@@ -38,7 +38,7 @@
     <div class="container-fluid">
         <div class="panel">
             <div class="panel-heading">
-                <h3 class="panel-title">서울시 산책로 위치<hr>미세먼지 예보:<span id="CAISTEP"></span>경보:<span id="ALERTSTEP"></span>"</h3>
+                <h3 class="panel-title">서울시 산책로 위치<hr>미세먼지 예보 : <span id="CAISTEP"></span> 경보 : <span id="ALERTSTEP"></span></h3>
             </div>
             <div class="panel-body">
                 <div class="table-type1">
@@ -249,8 +249,8 @@
 
       					for (i=0;i<data[subService].row.length;i++){
 
-                  $(".CAISTEP").text(data[subService].row[i].CAISTEP);
-                  $(".ALERTSTEP").text(data[subService].row[i].ALERTSTEP);
+                  $("#CAISTEP").text(data[subService].row[i].CAISTEP);
+                  $("#ALERTSTEP").text(data[subService].row[i].ALERTSTEP);
 
       						$("#detailTable tbody").append($("#format02 table tbody").html());
       					}

@@ -38,7 +38,7 @@
     <div class="container-fluid">
         <div class="panel">
             <div class="panel-heading">
-                <h3 class="panel-title">서울시 걷고 싶은 산책길 정보</h3>
+                <h3 class="panel-title">서울시 산책로 위치<hr>미세먼지 예보 : <span id="CAISTEP"></span> 경보 : <span id="ALERTSTEP"></span></h3>
             </div>
             <div class="panel-body">
                 <div class="table-type1">
@@ -100,16 +100,6 @@
                                       <option value="1시간">1시간 - 2시간미만</option>
                                       <option value="2시간">2시간 - 3시간미만</option>
                                       <option value="3시간">3시간 - 4시간미만</option>
-                                    </select>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>내 위치 허용여부</th>
-                                <td>
-                                    <select id="MY_POS" class="select" style="width:99%;">
-                                      <option value="">-선택-</option>
-                                      <option value="YES">허용</option>
-                                      <option value="NO">미허용</option>
                                     </select>
                                 </td>
                             </tr>
@@ -233,6 +223,53 @@
 
         $(document).ready(function() {
 
+          var subService = "ForecastWarningUltrafineParticleOfDustService";
+      		var dataObj = new Object();
+      		dataObj.paramStr = subService+"/1/1/";
+      		dataObj.serviceName = subService;
+
+      		$("#detailTable tbody tr").remove();
+      		$(document.body).showLoading();
+      		$.ajax({
+      			url: dataSeoulUrl,
+      			method : 'POST',
+      			data: dataObj,
+      			dataType : "jsonp",
+      			jsonp : "callback",
+      			success: function(data){
+      				//console.log(data);
+
+      				if (data[subService] != null){
+
+      					if (!$.isArray(data[subService].row)){
+      						bakData = data[subService].row;
+      						data[subService].row = new Array();
+      						data[subService].row[0] = bakData;
+      					}
+
+      					for (i=0;i<data[subService].row.length;i++){
+
+                  $("#CAISTEP").text(data[subService].row[i].CAISTEP);
+                  $("#ALERTSTEP").text(data[subService].row[i].ALERTSTEP);
+
+      						$("#detailTable tbody").append($("#format02 table tbody").html());
+      					}
+      					$("#tMain").hide();
+      					$("#tDetail").show();
+      				}else{
+      					navigator.notification.alert(alertNoData,null,alertTitle);
+      				}
+      				$(document.body).hideLoading();
+      			},
+      			error: function(){
+      				$(document.body).hideLoading();
+      				navigator.notification.alert(alertNetwork,null,alertTitle);
+      			}
+      		});
+
+      		return;
+
+
         });
 
         $(window).scroll(function() {
@@ -289,18 +326,6 @@
                 dataObj["AREA_GU"] = $("#AREA_GU").val();
             }
 
-            if($("#MY_POS").val() === "YES"){
-              if (!navigator.geolocation) {
-                  alert ("지오로케이션을 지원하지 않습니다.");
-                  return;
-                }
-                navigator.geolocation.getCurrentPosition (function (pos){
-                  $(document.body).hideLoading();
-                  curLat = pos.coords.latitude;
-                  curLnt = pos.coords.longitude;
-
-                },fnLocationError );
-            }
 
             $("#resTable tbody tr").remove();
             $(document.body).showLoading();
@@ -312,12 +337,10 @@
                 dataType: "jsonp",
                 jsonp: "callback",
                 success: function(data) {
-                    alert(curLat, curLat)
-                    var tempData = null;
-                    tempData = data;
-                    console.log(data)
 
-                    globalData = tempData;
+                    var tempData = null;
+                    globalData = data;
+                    console.log(data)
                     globalSeq = 1;
 
                     if (globalData[serviceName] != null) {
@@ -326,14 +349,10 @@
                             bakData = globalData[serviceName].row;
                             globalData[serviceName].row = new Array();
                             globalData[serviceName].row[0] = bakData;
-
                         }
 
                         $("#totalCnt").text("(" + globalData[serviceName].row.length + ")");
-
-
                         globalTotalCount = globalData[serviceName].row.length;
-
                         for (i = 0; i < globalTotalCount; i++) {
                           //console.log(globalData[serviceName])
                             if (i >= globalSeq * 10) {
@@ -349,8 +368,6 @@
                             $("#format01 table tbody .LEAD_TIME").text(globalData[serviceName].row[i].LEAD_TIME);
 
                             $("#resTable tbody").append($("#format01 table tbody").html());
-
-
                         }
 
                     } else {
@@ -367,11 +384,8 @@
                     console.log('에러 났음')
                 }
             });
-
             return;
                   }
-
-
         function fnBack() {
             $("#tDetail").hide();
             $("#tMain").show();
